@@ -17,9 +17,35 @@
 }
 
 .Card {
-  height: 600px;
-  text-overflow: ellipsis;
+  height: 40vh;
   padding-bottom: 10px;
+  min-width: 200px;
+}
+
+.ButtonRight {
+  position: absolute;
+  bottom: 1vw;
+  right: 1vw;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.ButtonLeft {
+  position: absolute;
+  bottom: 1vw;
+  left: 1vw;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.Thumbnail {
+  height: 25vh;
+}
+
+.BigImage {
+  display: block;
+  margin: auto;
+  width: 100%;
 }
 
 /* Default React App CSS stuff*/
