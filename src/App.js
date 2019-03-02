@@ -10,7 +10,9 @@ class App extends Component {
     this.state = {
       results: [],
       start: "",
-      end: ""
+      end: "",
+      locations: [],
+      selectedLoc: ""
     };
   }
 
@@ -27,19 +29,66 @@ class App extends Component {
     });
   };
 
+  filterLocations = loc => {
+    this.setState({
+      selectedLoc: loc
+    });
+  };
+
   render() {
-    let pics = this.state.results.map(pic => {
+    let pics = this.state.results.map((pic, i) => {
       if (pic.data[0].media_type === "image") {
-        if (this.state.start !== "" && this.state.end !== "") {
+        if (
+          this.state.start !== "" &&
+          this.state.end !== "" &&
+          this.state.selectedLoc === ""
+        ) {
+          this.state.locations.length = 0;
           let startFormatted = moment(this.state.start).utc();
           let endFormatted = moment(this.state.end).utc();
           if (startFormatted.isBefore(pic.data[0].date_created)) {
             if (endFormatted.isAfter(pic.data[0].date_created)) {
-              return <PicCard pic={pic} />;
+              if ("location" in pic.data[0]) {
+                if (!this.state.locations.includes(pic.data[0].location)) {
+                  this.state.locations.push(pic.data[0].location);
+                }
+              }
+              return <PicCard pic={pic} key={i} />;
+            }
+          }
+        } else if (
+          this.state.start !== "" &&
+          this.state.end !== "" &&
+          this.state.selectedLoc !== ""
+        ) {
+          let startFormatted = moment(this.state.start).utc();
+          let endFormatted = moment(this.state.end).utc();
+          if (startFormatted.isBefore(pic.data[0].date_created)) {
+            if (endFormatted.isAfter(pic.data[0].date_created)) {
+              if ("location" in pic.data[0]) {
+                if (this.state.selectedLoc === pic.data[0].location) {
+                  return <PicCard pic={pic} key={i} />;
+                }
+              }
+            }
+          }
+        } else if (
+          this.state.start === "" &&
+          this.state.end === "" &&
+          this.state.selectedLoc !== ""
+        ) {
+          if ("location" in pic.data[0]) {
+            if (this.state.selectedLoc === pic.data[0].location) {
+              return <PicCard pic={pic} key={i} />;
             }
           }
         } else {
-          return <PicCard pic={pic} />;
+          if ("location" in pic.data[0]) {
+            if (!this.state.locations.includes(pic.data[0].location)) {
+              this.state.locations.push(pic.data[0].location);
+            }
+          }
+          return <PicCard pic={pic} key={i} />;
         }
       }
     });
@@ -48,6 +97,8 @@ class App extends Component {
         <SearchBar
           giveResults={this.giveResults}
           filterResults={this.filterResults}
+          locations={this.state.locations}
+          filterLocations={this.filterLocations}
         />
         <div className="PicsGrid">{pics}</div>
       </div>

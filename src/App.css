@@ -48,6 +48,18 @@
   width: 100%;
 }
 
+.Filters {
+  margin-top: 2vh;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.Label {
+  text-align: center;
+  vertical-align: middle;
+  margin-right: 1vw;
+}
+
 /* Default React App CSS stuff*/
 .App {
   text-align: center;

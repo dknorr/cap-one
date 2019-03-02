@@ -1,18 +1,19 @@
 import React, { Component } from "react";
 import axios from "axios";
 import moment from "moment";
-import { Input, DatePicker } from "antd";
+import { Input, DatePicker, Select, Button } from "antd";
 import "antd/dist/antd.css";
 
 const Search = Input.Search;
 const RangePicker = DatePicker.RangePicker;
+const Option = Select.Option;
 
 export default class SearchBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       results: [],
-      term: "dog"
+      term: ""
     };
   }
 
@@ -32,12 +33,25 @@ export default class SearchBar extends Component {
       });
   };
 
+  //for range picker
   onChange = (dates, dateStrings) => {
     console.log(dates);
     this.props.filterResults(dateStrings[0], dateStrings[1]);
   };
 
+  //for location menu
+  handleChange = loc => {
+    this.props.filterLocations(loc);
+  };
+
   render() {
+    let locs = this.props.locations.map((loc, i) => {
+      return (
+        <Option value={loc} key={i}>
+          {loc}
+        </Option>
+      );
+    });
     return (
       <div className="SearchBar">
         <Search
@@ -46,14 +60,30 @@ export default class SearchBar extends Component {
           size="large"
           onSearch={value => this.doSearch(value)}
         />
-        <RangePicker
-          ranges={{
-            Today: [moment(), moment()],
-            "This Month": [moment().startOf("month"), moment().endOf("month")]
-          }}
-          format="YYYY-MM-DD"
-          onChange={this.onChange}
-        />
+        <div className="Filters">
+          <RangePicker
+            ranges={{
+              Today: [moment(), moment()],
+              "This Month": [moment().startOf("month"), moment().endOf("month")]
+            }}
+            format="YYYY-MM-DD"
+            onChange={this.onChange}
+          />
+          <Select
+            showSearch
+            style={{ width: "15vw" }}
+            placeholder="Select a location"
+            optionFilterProp="children"
+            onChange={this.handleChange}
+            filterOption={(input, option) =>
+              option.props.children
+                .toLowerCase()
+                .indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {locs}
+          </Select>
+        </div>
       </div>
     );
   }
