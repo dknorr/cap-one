@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Card, Modal, Button } from "antd";
-import { isNull } from "util";
 
 const { Meta } = Card;
 
@@ -78,16 +77,24 @@ export default class PicCard extends Component {
           width="40vw"
           title={this.props.pic.data[0].title}
           visible={this.state.visibleView}
-          onOk={this.handleOk}
           onCancel={this.handleCancel}
+          footer={[
+            <Button key="close" onClick={this.handleCancel}>
+              Close
+            </Button>
+          ]}
         >
-          <img className="BigImage" alt="Image here" src={link} />
+          <img className="Big" alt="Result here" src={link} />
         </Modal>
         <Modal
           title={this.props.pic.data[0].title}
           visible={this.state.visibleDetails}
-          onOk={this.handleOk}
           onCancel={this.handleCancel}
+          footer={[
+            <Button key="close" onClick={this.handleCancel}>
+              Close
+            </Button>
+          ]}
         >
           <p>
             <strong>Full description: </strong>
