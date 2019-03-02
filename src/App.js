@@ -1,25 +1,49 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import SearchBar from "./Components/SearchBar.js";
+import { Card } from "antd";
+import "./App.css";
+
+//Some consts I use
+const { Meta } = Card;
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      results: []
+    };
+  }
+
+  giveResults = arr => {
+    this.setState({
+      results: arr
+    });
+  };
+
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
+    console.log(this.state.results);
+    let pics = this.state.results.map(pic => {
+      if (pic.data[0].media_type == "image") {
+        let link = pic.links[0].href;
+        return (
+          <Card
+            className="Card"
+            hoverable
+            style={{ width: "16vw", margin: "1vw" }}
+            cover={<img alt="example" src={link} />}
           >
-            Learn React
-          </a>
-        </header>
+            <Meta
+              title={pic.data[0].title}
+              description={pic.data[0].description}
+            />
+          </Card>
+        );
+      }
+    });
+    return (
+      <div>
+        <SearchBar giveResults={this.giveResults} />
+        <div className="PicsGrid">{pics}</div>
       </div>
     );
   }
