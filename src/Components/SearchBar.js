@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import moment from "moment";
-import { Input, DatePicker, Select, Button } from "antd";
+import { Input, DatePicker, Select } from "antd";
 import "antd/dist/antd.css";
 
 const Search = Input.Search;
@@ -55,7 +55,7 @@ export default class SearchBar extends Component {
     return (
       <div className="SearchBar">
         <Search
-          placeholder="Input search terms"
+          placeholder="NASA image search"
           enterButton="Search"
           size="large"
           onSearch={value => this.doSearch(value)}
@@ -71,7 +71,7 @@ export default class SearchBar extends Component {
           />
           <Select
             showSearch
-            style={{ width: "15vw" }}
+            style={{ width: "15vw", marginLeft: "2vw" }}
             placeholder="Select a location"
             optionFilterProp="children"
             onChange={this.handleChange}

@@ -1,18 +1,26 @@
 import React, { Component } from "react";
 import SearchBar from "./Components/SearchBar.js";
 import PicCard from "./Components/PicCard.js";
+import firebase, { auth, provider } from "./firebase.js";
 import moment from "moment";
+import { Button, message } from "antd";
+import "antd/dist/antd.css";
 import "./App.css";
 
 class App extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
     this.state = {
       results: [],
       start: "",
       end: "",
       locations: [],
-      selectedLoc: ""
+      selectedLoc: "",
+      curUser: "",
+      favorites: [],
+      user: null
     };
   }
 
@@ -35,7 +43,46 @@ class App extends Component {
     });
   };
 
+  login = () => {
+    auth.signInWithPopup(provider).then(result => {
+      const user = result.user;
+      this.setState({
+        user
+      });
+      message.success("Log in succesful!");
+    });
+  };
+
+  logout = () => {
+    auth.signOut().then(() => {
+      this.setState({
+        user: null
+      });
+      message.success("Logout succesful!");
+    });
+  };
+
+  inAndOut = () => {
+    if (this.state.user === null) {
+      this.login();
+    } else {
+      this.logout();
+    }
+  };
+
+  componentDidMount() {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        this.setState({ user });
+      }
+    });
+  }
+
   render() {
+    let authButton = "Logout";
+    if (this.state.user === null) {
+      authButton = "Log In";
+    }
     let pics = this.state.results.map((pic, i) => {
       if (pic.data[0].media_type === "image") {
         if (
@@ -53,7 +100,14 @@ class App extends Component {
                   this.state.locations.push(pic.data[0].location);
                 }
               }
-              return <PicCard pic={pic} key={i} />;
+              return (
+                <PicCard
+                  pic={pic}
+                  key={i}
+                  user={this.state.user}
+                  favorites={this.state.favorites}
+                />
+              );
             }
           }
         } else if (
@@ -67,7 +121,14 @@ class App extends Component {
             if (endFormatted.isAfter(pic.data[0].date_created)) {
               if ("location" in pic.data[0]) {
                 if (this.state.selectedLoc === pic.data[0].location) {
-                  return <PicCard pic={pic} key={i} />;
+                  return (
+                    <PicCard
+                      pic={pic}
+                      key={i}
+                      user={this.state.user}
+                      favorites={this.state.favorites}
+                    />
+                  );
                 }
               }
             }
@@ -79,7 +140,14 @@ class App extends Component {
         ) {
           if ("location" in pic.data[0]) {
             if (this.state.selectedLoc === pic.data[0].location) {
-              return <PicCard pic={pic} key={i} />;
+              return (
+                <PicCard
+                  pic={pic}
+                  key={i}
+                  user={this.state.user}
+                  favorites={this.state.favorites}
+                />
+              );
             }
           }
         } else {
@@ -88,12 +156,27 @@ class App extends Component {
               this.state.locations.push(pic.data[0].location);
             }
           }
-          return <PicCard pic={pic} key={i} />;
+          return (
+            <PicCard
+              pic={pic}
+              key={i}
+              user={this.state.user}
+              favorites={this.state.favorites}
+            />
+          );
         }
       }
     });
     return (
       <div>
+        <div className="Login">
+          <Button type="secondary" style={{ marginRight: "1vw" }}>
+            Favorites
+          </Button>
+          <Button type="primary" onClick={this.inAndOut}>
+            {authButton}
+          </Button>
+        </div>
         <SearchBar
           giveResults={this.giveResults}
           filterResults={this.filterResults}

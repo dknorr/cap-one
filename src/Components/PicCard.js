@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Card, Modal, Button } from "antd";
+import { Card, Modal, Button, message } from "antd";
+import firebase from "../firebase.js";
 
 const { Meta } = Card;
 
@@ -8,7 +9,8 @@ export default class PicCard extends Component {
     super(props);
     this.state = {
       visibleView: false,
-      visibleDetails: false
+      visibleDetails: false,
+      favorites: []
     };
   }
 
@@ -40,8 +42,59 @@ export default class PicCard extends Component {
     });
   };
 
+  handleFav = e => {
+    this.setState({
+      visibleDetails: false,
+      visibleView: false
+    });
+    console.log(e);
+    let path = "users/" + this.props.user.uid;
+    let prevFavs = this.state.favorites;
+    console.log(prevFavs);
+    let usersRef = firebase.database().ref(path);
+    if (prevFavs.length > 0) {
+      if (!prevFavs.includes(this.props.pic.data[0].nasa_id)) {
+        prevFavs.push(this.props.pic.data[0].nasa_id);
+        usersRef.push(this.props.pic);
+        message.success("Added to favorites!");
+      } else {
+        message.warning("This image is already in your favorites!");
+      }
+    } else {
+      usersRef.push(this.props.pic);
+      prevFavs.push(this.props.pic.data[0].nasa_id);
+      message.success("Added to favorites!");
+      this.setState({
+        buttonLoad: false
+      });
+    }
+  };
+
+  componentDidMount() {
+    if (this.props.user !== null) {
+      let prevFavs = [];
+      let path = "users/" + this.props.user.uid;
+      let usersRef = firebase.database().ref(path);
+      usersRef.on("value", snapshot => {
+        let favs = snapshot.val();
+        console.log(favs);
+        for (let pic in favs) {
+          prevFavs.push(pic);
+        }
+      });
+      console.log(prevFavs);
+      this.setState({
+        favorites: prevFavs
+      });
+    }
+  }
+
   render() {
     let link = this.props.pic.links[0].href;
+    let logBool = false;
+    if (this.props.user === null) {
+      logBool = true;
+    }
     let date = this.props.pic.data[0].date_created.substring(0, 10);
     let secondCreator = this.props.pic.data[0].secondary_creator;
     if (secondCreator == null) {
@@ -79,6 +132,9 @@ export default class PicCard extends Component {
           visible={this.state.visibleView}
           onCancel={this.handleCancel}
           footer={[
+            <Button key="fav" onClick={this.handleFav} disabled={logBool}>
+              Add to favorites
+            </Button>,
             <Button key="close" onClick={this.handleCancel}>
               Close
             </Button>
@@ -91,7 +147,10 @@ export default class PicCard extends Component {
           visible={this.state.visibleDetails}
           onCancel={this.handleCancel}
           footer={[
-            <Button key="close" onClick={this.handleCancel}>
+            <Button key="fav" onClick={this.handleFav} disabled={logBool}>
+              Add to favorites
+            </Button>,
+            <Button key="close" type="primary" onClick={this.handleCancel}>
               Close
             </Button>
           ]}

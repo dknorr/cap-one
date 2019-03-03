@@ -60,6 +60,12 @@
   margin-right: 1vw;
 }
 
+.Login {
+  display: flex;
+  justify-content: flex-end;
+  margin: 1vw;
+}
+
 /* Default React App CSS stuff*/
 .App {
   text-align: center;
