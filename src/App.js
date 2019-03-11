@@ -24,6 +24,17 @@ class App extends Component {
     };
   }
 
+  /**
+   * Generic parent changing function
+   * @param {string} field - The name of field being modified
+   * @param {value} value - The value for the modified field
+   */
+  changeParent = (field, value) => {
+    this.setState({
+      [field]: value
+    });
+  };
+
   giveResults = arr => {
     this.setState({
       results: arr
@@ -43,6 +54,9 @@ class App extends Component {
     });
   };
 
+  /**
+   * Function for handeling user authentication in
+   */
   login = () => {
     auth.signInWithPopup(provider).then(result => {
       const user = result.user;
@@ -182,6 +196,7 @@ class App extends Component {
           filterResults={this.filterResults}
           locations={this.state.locations}
           filterLocations={this.filterLocations}
+          changeParent={this.changeParent}
         />
         <div className="PicsGrid">{pics}</div>
       </div>

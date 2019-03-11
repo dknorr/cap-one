@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import moment from "moment";
-import { Input, DatePicker, Select } from "antd";
+import { Input, DatePicker, Select, Button } from "antd";
 import "antd/dist/antd.css";
 
 const Search = Input.Search;
@@ -22,11 +22,11 @@ export default class SearchBar extends Component {
     axios
       .get("https://images-api.nasa.gov/search?q=" + term)
       .then(response => {
-        // pic.data[0].media_type
         this.setState({
           results: response.data.collection.items
         });
         this.props.giveResults(this.state.results);
+        this.props.changeParent("locations", []);
       })
       .catch(error => {
         console.log(error);
@@ -42,6 +42,13 @@ export default class SearchBar extends Component {
   //for location menu
   handleChange = loc => {
     this.props.filterLocations(loc);
+  };
+
+  //reset filters
+  resetFilters = () => {
+    this.props.changeParent("start", "");
+    this.props.changeParent("end", "");
+    this.props.changeParent("selectedLoc", "");
   };
 
   render() {
@@ -83,6 +90,9 @@ export default class SearchBar extends Component {
           >
             {locs}
           </Select>
+          <Button style={{ marginLeft: "2vw" }} onClick={this.resetFilters}>
+            Reset Filters
+          </Button>
         </div>
       </div>
     );
