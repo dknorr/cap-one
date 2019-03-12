@@ -27,6 +27,7 @@ export default class SearchBar extends Component {
         });
         this.props.giveResults(this.state.results);
         this.props.changeParent("locations", []);
+        this.props.changeParent("viewingFavs", false);
       })
       .catch(error => {
         console.log(error);

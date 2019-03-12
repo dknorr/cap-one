@@ -20,7 +20,8 @@ class App extends Component {
       selectedLoc: "",
       curUser: "",
       favorites: [],
-      user: null
+      user: null,
+      viewingFavs: false
     };
   }
 
@@ -84,6 +85,27 @@ class App extends Component {
     }
   };
 
+  showFavs = () => {
+    if (this.state.user !== null) {
+      let path = "users/" + this.state.user.uid;
+      let usersRef = firebase.database().ref(path);
+      let favPics = [];
+      usersRef.once("value", snapshot => {
+        snapshot.forEach(childSnap => {
+          let pic = childSnap.val();
+          pic.key = childSnap.key;
+          favPics.push(pic);
+        });
+        this.setState({
+          results: favPics,
+          viewingFavs: true
+        });
+      });
+    } else {
+      message.warning("You must be logged in to view favorites.");
+    }
+  };
+
   componentDidMount() {
     auth.onAuthStateChanged(user => {
       if (user) {
@@ -120,6 +142,7 @@ class App extends Component {
                   key={i}
                   user={this.state.user}
                   favorites={this.state.favorites}
+                  favBool={this.state.viewingFavs}
                 />
               );
             }
@@ -141,6 +164,7 @@ class App extends Component {
                       key={i}
                       user={this.state.user}
                       favorites={this.state.favorites}
+                      favBool={this.state.viewingFavs}
                     />
                   );
                 }
@@ -160,6 +184,7 @@ class App extends Component {
                   key={i}
                   user={this.state.user}
                   favorites={this.state.favorites}
+                  favBool={this.state.viewingFavs}
                 />
               );
             }
@@ -176,6 +201,7 @@ class App extends Component {
               key={i}
               user={this.state.user}
               favorites={this.state.favorites}
+              favBool={this.state.viewingFavs}
             />
           );
         }
@@ -184,7 +210,11 @@ class App extends Component {
     return (
       <div>
         <div className="Login">
-          <Button type="secondary" style={{ marginRight: "1vw" }}>
+          <Button
+            type="secondary"
+            style={{ marginRight: "1vw" }}
+            onClick={this.showFavs}
+          >
             Favorites
           </Button>
           <Button type="primary" onClick={this.inAndOut}>

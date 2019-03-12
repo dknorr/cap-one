@@ -50,7 +50,7 @@ export default class PicCard extends Component {
     console.log(e);
     let path = "users/" + this.props.user.uid;
     let prevFavs = this.state.favorites;
-    console.log(prevFavs);
+    //console.log(prevFavs);
     let usersRef = firebase.database().ref(path);
     if (prevFavs.length > 0) {
       if (!prevFavs.includes(this.props.pic.data[0].nasa_id)) {
@@ -77,12 +77,12 @@ export default class PicCard extends Component {
       let usersRef = firebase.database().ref(path);
       usersRef.on("value", snapshot => {
         let favs = snapshot.val();
-        console.log(favs);
+        //console.log(favs);
         for (let pic in favs) {
           prevFavs.push(pic);
         }
       });
-      console.log(prevFavs);
+      //console.log(prevFavs);
       this.setState({
         favorites: prevFavs
       });
@@ -90,10 +90,14 @@ export default class PicCard extends Component {
   }
 
   render() {
+    let buttonText = "Add to favorites";
     let link = this.props.pic.links[0].href;
     let logBool = false;
-    if (this.props.user === null) {
+    if (this.props.user === null || this.props.favBool) {
       logBool = true;
+    }
+    if (this.props.favBool) {
+      buttonText = "Remove from favorites";
     }
     let date = this.props.pic.data[0].date_created.substring(0, 10);
     let secondCreator = this.props.pic.data[0].secondary_creator;
@@ -133,7 +137,7 @@ export default class PicCard extends Component {
           onCancel={this.handleCancel}
           footer={[
             <Button key="fav" onClick={this.handleFav} disabled={logBool}>
-              Add to favorites
+              {buttonText}
             </Button>,
             <Button key="close" onClick={this.handleCancel}>
               Close
@@ -148,7 +152,7 @@ export default class PicCard extends Component {
           onCancel={this.handleCancel}
           footer={[
             <Button key="fav" onClick={this.handleFav} disabled={logBool}>
-              Add to favorites
+              {this.state.buttonText}
             </Button>,
             <Button key="close" type="primary" onClick={this.handleCancel}>
               Close
