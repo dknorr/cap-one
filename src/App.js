@@ -71,7 +71,8 @@ class App extends Component {
   logout = () => {
     auth.signOut().then(() => {
       this.setState({
-        user: null
+        user: null,
+        results: []
       });
       message.success("Logout succesful!");
     });
@@ -143,6 +144,7 @@ class App extends Component {
                   user={this.state.user}
                   favorites={this.state.favorites}
                   favBool={this.state.viewingFavs}
+                  reshowFavs={this.showFavs}
                 />
               );
             }
@@ -165,6 +167,7 @@ class App extends Component {
                       user={this.state.user}
                       favorites={this.state.favorites}
                       favBool={this.state.viewingFavs}
+                      reshowFavs={this.showFavs}
                     />
                   );
                 }
@@ -185,6 +188,7 @@ class App extends Component {
                   user={this.state.user}
                   favorites={this.state.favorites}
                   favBool={this.state.viewingFavs}
+                  reshowFavs={this.showFavs}
                 />
               );
             }
@@ -202,11 +206,18 @@ class App extends Component {
               user={this.state.user}
               favorites={this.state.favorites}
               favBool={this.state.viewingFavs}
+              reshowFavs={this.showFavs}
             />
           );
         }
       }
     });
+    if (pics.length < 1) {
+      pics = "No results. Search for another keyword or change filters.";
+    }
+    if (pics.length < 1 && this.state.viewingFavs == true) {
+      pics = "Nothing in favorites right now!";
+    }
     return (
       <div>
         <div className="Login">

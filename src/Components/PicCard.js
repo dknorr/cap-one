@@ -26,14 +26,6 @@ export default class PicCard extends Component {
     });
   };
 
-  handleOk = e => {
-    console.log(e);
-    this.setState({
-      visibleView: false,
-      visibleDetails: false
-    });
-  };
-
   handleCancel = e => {
     console.log(e);
     this.setState({
@@ -42,52 +34,46 @@ export default class PicCard extends Component {
     });
   };
 
-  handleFav = e => {
-    this.setState({
-      visibleDetails: false,
-      visibleView: false
-    });
-    console.log(e);
-    let path = "users/" + this.props.user.uid;
-    let prevFavs = this.state.favorites;
-    //console.log(prevFavs);
-    let usersRef = firebase.database().ref(path);
-    if (prevFavs.length > 0) {
-      if (!prevFavs.includes(this.props.pic.data[0].nasa_id)) {
-        prevFavs.push(this.props.pic.data[0].nasa_id);
-        usersRef.push(this.props.pic);
-        message.success("Added to favorites!");
-      } else {
-        message.warning("This image is already in your favorites!");
-      }
-    } else {
-      usersRef.push(this.props.pic);
-      prevFavs.push(this.props.pic.data[0].nasa_id);
-      message.success("Added to favorites!");
-      this.setState({
-        buttonLoad: false
-      });
-    }
+  unFavPic = () => {
+    const path = "users/" + this.props.user.uid + "/" + this.props.pic.key;
+    console.log(path);
+    const picRef = firebase.database().ref(path);
+    picRef.remove();
   };
 
-  componentDidMount() {
-    if (this.props.user !== null) {
-      let prevFavs = [];
-      let path = "users/" + this.props.user.uid;
-      let usersRef = firebase.database().ref(path);
-      usersRef.on("value", snapshot => {
-        let favs = snapshot.val();
-        //console.log(favs);
-        for (let pic in favs) {
-          prevFavs.push(pic);
-        }
-      });
-      //console.log(prevFavs);
+  handleFav = e => {
+    if (this.props.favBool) {
+      this.unFavPic();
+      this.handleCancel(e);
+      this.props.reshowFavs();
+      message.success("Removed from favorites!");
+    } else {
       this.setState({
-        favorites: prevFavs
+        visibleDetails: false,
+        visibleView: false
       });
+      console.log(e);
+      let path = "users/" + this.props.user.uid;
+      let prevFavs = this.state.favorites;
+      let usersRef = firebase.database().ref(path);
+      if (prevFavs.length > 0) {
+        if (!prevFavs.includes(this.props.pic.data[0].nasa_id)) {
+          prevFavs.push(this.props.pic.data[0].nasa_id);
+          usersRef.push(this.props.pic);
+          message.success("Added to favorites!");
+        } else {
+          message.warning("This image is already in your favorites!");
+        }
+      } else {
+        usersRef.push(this.props.pic);
+        prevFavs.push(this.props.pic.data[0].nasa_id);
+        message.success("Added to favorites!");
+        this.setState({
+          buttonLoad: false
+        });
+      }
     }
-  }
+  };
 
   render() {
     let buttonText = "Add to favorites";
@@ -136,7 +122,7 @@ export default class PicCard extends Component {
           visible={this.state.visibleView}
           onCancel={this.handleCancel}
           footer={[
-            <Button key="fav" onClick={this.handleFav} disabled={logBool}>
+            <Button key="fav" onClick={this.handleFav}>
               {buttonText}
             </Button>,
             <Button key="close" onClick={this.handleCancel}>
@@ -151,8 +137,8 @@ export default class PicCard extends Component {
           visible={this.state.visibleDetails}
           onCancel={this.handleCancel}
           footer={[
-            <Button key="fav" onClick={this.handleFav} disabled={logBool}>
-              {this.state.buttonText}
+            <Button key="fav" onClick={this.handleFav}>
+              {buttonText}
             </Button>,
             <Button key="close" type="primary" onClick={this.handleCancel}>
               Close

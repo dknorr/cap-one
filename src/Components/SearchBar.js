@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import moment from "moment";
-import { Input, DatePicker, Select, Button } from "antd";
+import { Input, DatePicker, Select, Button, message } from "antd";
 import "antd/dist/antd.css";
 
 const Search = Input.Search;
@@ -28,6 +28,9 @@ export default class SearchBar extends Component {
         this.props.giveResults(this.state.results);
         this.props.changeParent("locations", []);
         this.props.changeParent("viewingFavs", false);
+        if (this.state.results.length < 1) {
+          message.warning("No results found.");
+        }
       })
       .catch(error => {
         console.log(error);
