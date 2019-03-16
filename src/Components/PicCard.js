@@ -1,5 +1,11 @@
 import React, { Component } from "react";
 import { Card, Modal, Button, message } from "antd";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  FacebookIcon,
+  TwitterIcon
+} from "react-share";
 import firebase from "../firebase.js";
 
 const { Meta } = Card;
@@ -14,18 +20,27 @@ export default class PicCard extends Component {
     };
   }
 
+  /**
+   * Handles the visibility of the full image modal
+   */
   showView = () => {
     this.setState({
       visibleView: true
     });
   };
 
+  /**
+   * Handles the visibility of the image details modal
+   */
   showDetails = () => {
     this.setState({
       visibleDetails: true
     });
   };
 
+  /**
+   * Handles the cancel/close out for both full image and details modal
+   */
   handleCancel = e => {
     console.log(e);
     this.setState({
@@ -34,6 +49,9 @@ export default class PicCard extends Component {
     });
   };
 
+  /**
+   * Handles the remove from favorites functionality. Removes item by id from Firebase
+   */
   unFavPic = () => {
     const path = "users/" + this.props.user.uid + "/" + this.props.pic.key;
     console.log(path);
@@ -41,6 +59,11 @@ export default class PicCard extends Component {
     picRef.remove();
   };
 
+  /**
+   * Handles the add to favorites functionality. Checks if image already favorited,
+   * closes out modal after adding favorite image to client and database favorites.
+   * Uses modal close out to give time for asynchroncities.
+   */
   handleFav = e => {
     if (this.props.favBool) {
       this.unFavPic();
@@ -52,7 +75,6 @@ export default class PicCard extends Component {
         visibleDetails: false,
         visibleView: false
       });
-      console.log(e);
       let path = "users/" + this.props.user.uid;
       let prevFavs = this.state.favorites;
       let usersRef = firebase.database().ref(path);
@@ -68,14 +90,14 @@ export default class PicCard extends Component {
         usersRef.push(this.props.pic);
         prevFavs.push(this.props.pic.data[0].nasa_id);
         message.success("Added to favorites!");
-        this.setState({
-          buttonLoad: false
-        });
       }
     }
   };
 
   render() {
+    /**
+     * Make button variable based on if image is already in favorites or not
+     */
     let buttonText = "Add to favorites";
     let link = this.props.pic.links[0].href;
     let logBool = false;
@@ -122,6 +144,22 @@ export default class PicCard extends Component {
           visible={this.state.visibleView}
           onCancel={this.handleCancel}
           footer={[
+            <FacebookShareButton
+              url={this.props.pic.links[0].href}
+              style={{ width: "2vw", position: "absolute" }}
+            >
+              <FacebookIcon size={"2vw"} round />
+            </FacebookShareButton>,
+            <TwitterShareButton
+              url={this.props.pic.links[0].href}
+              style={{
+                width: "2vw",
+                position: "absolute",
+                marginLeft: "2vw"
+              }}
+            >
+              <TwitterIcon size={"2vw"} round />
+            </TwitterShareButton>,
             <Button key="fav" onClick={this.handleFav}>
               {buttonText}
             </Button>,
@@ -137,6 +175,22 @@ export default class PicCard extends Component {
           visible={this.state.visibleDetails}
           onCancel={this.handleCancel}
           footer={[
+            <FacebookShareButton
+              url={this.props.pic.links[0].href}
+              style={{ width: "2vw", position: "absolute" }}
+            >
+              <FacebookIcon size={"2vw"} round />
+            </FacebookShareButton>,
+            <TwitterShareButton
+              url={this.props.pic.links[0].href}
+              style={{
+                width: "2vw",
+                position: "absolute",
+                marginLeft: "2vw"
+              }}
+            >
+              <TwitterIcon size={"2vw"} round />
+            </TwitterShareButton>,
             <Button key="fav" onClick={this.handleFav}>
               {buttonText}
             </Button>,

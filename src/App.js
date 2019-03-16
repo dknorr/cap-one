@@ -36,27 +36,8 @@ class App extends Component {
     });
   };
 
-  giveResults = arr => {
-    this.setState({
-      results: arr
-    });
-  };
-
-  filterResults = (start, end) => {
-    this.setState({
-      start: start,
-      end: end
-    });
-  };
-
-  filterLocations = loc => {
-    this.setState({
-      selectedLoc: loc
-    });
-  };
-
   /**
-   * Function for handeling user authentication in
+   * Handle login helper function
    */
   login = () => {
     auth.signInWithPopup(provider).then(result => {
@@ -68,6 +49,9 @@ class App extends Component {
     });
   };
 
+  /**
+   * Handle logout helper function
+   */
   logout = () => {
     auth.signOut().then(() => {
       this.setState({
@@ -78,6 +62,9 @@ class App extends Component {
     });
   };
 
+  /**
+   * Handle login and logout using helper functions
+   */
   inAndOut = () => {
     if (this.state.user === null) {
       this.login();
@@ -86,6 +73,9 @@ class App extends Component {
     }
   };
 
+  /**
+   * Handle displaying favorites as results
+   */
   showFavs = () => {
     if (this.state.user !== null) {
       let path = "users/" + this.state.user.uid;
@@ -120,6 +110,10 @@ class App extends Component {
     if (this.state.user === null) {
       authButton = "Log In";
     }
+    /**
+     * Map through results and generate <PicCard> for each of them. Checks for applied
+     * filters before ultimately providing list of elements to return of render()
+     */
     let pics = this.state.results.map((pic, i) => {
       if (pic.data[0].media_type === "image") {
         if (
@@ -212,6 +206,9 @@ class App extends Component {
         }
       }
     });
+    /**
+     * Display for no result cases
+     */
     if (pics.length < 1) {
       pics = "No results. Search for another keyword or change filters.";
     }
@@ -233,10 +230,7 @@ class App extends Component {
           </Button>
         </div>
         <SearchBar
-          giveResults={this.giveResults}
-          filterResults={this.filterResults}
           locations={this.state.locations}
-          filterLocations={this.filterLocations}
           changeParent={this.changeParent}
         />
         <div className="PicsGrid">{pics}</div>
