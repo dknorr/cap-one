@@ -5,9 +5,11 @@
   "dependencies": {
     "antd": "^3.13.6",
     "axios": "^0.18.0",
+    "moment": "^2.24.0",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
-    "react-scripts": "2.1.5"
+    "react-scripts": "2.1.5",
+    "react-share": "^2.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -23,5 +25,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "firebase": "^5.8.5"
+  }
 }

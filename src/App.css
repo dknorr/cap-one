@@ -1,3 +1,72 @@
+/* My CSS  stuff*/
+.SearchBar {
+  position: relative;
+  margin-left: 25%;
+  margin-top: 5%;
+  width: 50%;
+}
+
+.PicsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  justify-content: space-evenly;
+  margin-top: 5%;
+  margin-left: 6%;
+  margin-right: 6%;
+}
+
+.Card {
+  height: 40vh;
+  padding-bottom: 10px;
+  min-width: 200px;
+}
+
+.ButtonRight {
+  position: absolute;
+  bottom: 1vw;
+  right: 1vw;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.ButtonLeft {
+  position: absolute;
+  bottom: 1vw;
+  left: 1vw;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.Thumbnail {
+  height: 25vh;
+}
+
+.Big {
+  display: block;
+  margin: auto;
+  width: 100%;
+}
+
+.Filters {
+  margin-top: 2vh;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.Label {
+  text-align: center;
+  vertical-align: middle;
+  margin-right: 1vw;
+}
+
+.Login {
+  display: flex;
+  justify-content: flex-end;
+  margin: 1vw;
+}
+
+/* Default React App CSS stuff*/
 .App {
   text-align: center;
 }
