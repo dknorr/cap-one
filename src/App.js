@@ -88,6 +88,7 @@ class App extends Component {
           favPics.push(pic);
         });
         this.setState({
+          locations: [],
           results: favPics,
           viewingFavs: true
         });
