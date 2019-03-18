@@ -109,6 +109,8 @@ class App extends Component {
     let authButton = "Logout";
     if (this.state.user === null) {
       authButton = "Log In";
+    } else {
+      authButton = "Logout" + this.state.user;
     }
     /**
      * Map through results and generate <PicCard> for each of them. Checks for applied
