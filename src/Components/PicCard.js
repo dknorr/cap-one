@@ -101,7 +101,7 @@ export default class PicCard extends Component {
     let buttonText = "Add to favorites";
     let link = this.props.pic.links[0].href;
     let logBool = false;
-    if (this.props.user === null || this.props.favBool) {
+    if (this.props.user === null) {
       logBool = true;
     }
     if (this.props.favBool) {
@@ -160,7 +160,7 @@ export default class PicCard extends Component {
             >
               <TwitterIcon size={"2vw"} round />
             </TwitterShareButton>,
-            <Button key="fav" onClick={this.handleFav}>
+            <Button key="fav" onClick={this.handleFav} disabled={logBool}>
               {buttonText}
             </Button>,
             <Button key="close" onClick={this.handleCancel}>
@@ -191,7 +191,7 @@ export default class PicCard extends Component {
             >
               <TwitterIcon size={"2vw"} round />
             </TwitterShareButton>,
-            <Button key="fav" onClick={this.handleFav}>
+            <Button key="fav" onClick={this.handleFav} disabled={logBool}>
               {buttonText}
             </Button>,
             <Button key="close" type="primary" onClick={this.handleCancel}>
